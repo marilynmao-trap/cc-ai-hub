@@ -1,0 +1,694 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TR APAC Customer Care AI Repository</title>
+    <style>
+        /* CSS Variables for Theming */
+        :root {
+            /* Light Theme */
+            --bg-color: #f5f5f7;
+            --text-color: #1d1d1f;
+            --header-bg: rgba(245, 245, 247, 0.8);
+            --card-bg: #ffffff;
+            --card-border: #d2d2d7;
+            --accent-color: #0066cc;
+            --tag-bg: #e8e8ed;
+            --tag-text: #1d1d1f;
+            --nav-link: #1d1d1f;
+            --nav-hover: #0066cc;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme (Default) */
+            --bg-color: #0d0d12;
+            --text-color: #f5f5f7;
+            --header-bg: rgba(13, 13, 18, 0.8);
+            --card-bg: #1c1c1f;
+            --card-border: #333336;
+            --accent-color: #2997ff;
+            --tag-bg: #333336;
+            --tag-text: #f5f5f7;
+            --nav-link: #a1a1a6;
+            --nav-hover: #ffffff;
+        }
+
+        /* Global Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        button {
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        /* Header & Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--card-border);
+            box-sizing: border-box;
+            transition: padding 0.3s;
+        }
+
+        /* Scroll transition for Header Title */
+        .header-title {
+            font-size: 0px; /* Initially hidden */
+            font-weight: 600;
+            opacity: 0;
+            color: var(--accent-color);
+            transition: font-size 0.3s, opacity 0.3s;
+            white-space: nowrap;
+        }
+
+        .header-title.visible {
+            font-size: 20px; /* Target size on scroll */
+            opacity: 1;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--nav-link);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--nav-hover);
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent-color);
+        }
+
+        /* Entering Page / Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        /* Dynamic Title that fades out on scroll */
+        .hero-title-container {
+            transition: transform 0.5s, opacity 0.5s;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            margin: 0;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+        .hero h2 {
+            font-size: 2.5rem;
+            margin: 10px 0 0 0;
+            font-weight: 500;
+            color: var(--accent-color);
+        }
+
+        /* Delimiter */
+        .delimiter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 40px 0;
+            width: 100%;
+            max-width: 600px;
+        }
+        .delimiter::before, .delimiter::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--card-border);
+        }
+        .delimiter img {
+            height: 40px; /* Adjust based on image.png */
+            margin: 0 20px;
+        }
+
+        /* Main Content Container */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px 100px 40px;
+        }
+
+        section {
+            padding-top: 100px; /* Offset for fixed header */
+            margin-bottom: 60px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 15px;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .controls select, .controls button {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        /* Case Hub Grid (max 4 per line) */
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        /* Frontlines Grid */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        /* Frontlines Blogs (List view) */
+        .list-view {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Cards Generic Style */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border-color: var(--accent-color);
+        }
+
+        /* Folder Icon */
+        .folder-icon {
+            font-size: 40px;
+            color: #ffd166; /* Folder yellow */
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+        }
+
+        .card-meta {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: auto;
+        }
+
+        .tag {
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Blog specific card layout (Horizontal) */
+        .blog-card {
+            display: flex;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .blog-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-color);
+        }
+        .blog-content {
+            padding: 20px;
+            flex: 1;
+        }
+        .blog-img {
+            width: 250px;
+            background: #333;
+            /* Placeholder for image */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 12px;
+        }
+
+        /* FAQ Board Styles */
+        .board {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 30px;
+        }
+        
+        .board-input {
+            width: 100%;
+            background: var(--bg-color);
+            border: 1px solid var(--card-border);
+            color: var(--text-color);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        .btn-post {
+            background: var(--accent-color);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            float: right;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid var(--card-border);
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .grid-4 { grid-template-columns: repeat(3, 1fr); }
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+            .hero h1 { font-size: 3rem; }
+            .hero h2 { font-size: 2rem; }
+        }
+        @media (max-width: 768px) {
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .grid-3 { grid-template-columns: 1fr; }
+            .blog-card { flex-direction: column; }
+            .blog-img { width: 100%; height: 200px; }
+            .nav-links { display: none; }
+        }
+        @media (max-width: 480px) {
+            .grid-4 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header id="main-header">
+        <div class="header-title" id="headerTitle">Welcome to TR APAC Customer Care AI Repository</div>
+        <div class="nav-links">
+            <a href="#case-hub">Case Hub</a>
+            <a href="#frontlines">Frontlines</a>
+            <a href="#faq">FAQ & Ideas</a>
+            <button class="theme-toggle" id="themeToggle">Light Mode</button>
+        </div>
+    </header>
+
+    <!-- Entering Page (Hero Section) -->
+    <div class="hero">
+        <div class="hero-title-container" id="heroTitle">
+            <h1>Welcome to TR APAC</h1>
+            <h2>Customer Care AI Repository</h2>
+        </div>
+        <div class="delimiter">
+            <img src="image.png" alt="L'Oréal TR APAC" onerror="this.style.display='none'">
+        </div>
+        <p style="color: #888;">Scroll down to explore</p>
+    </div>
+
+    <main>
+        <!-- Case Hub Section -->
+        <section id="case-hub">
+            <div class="section-header">
+                <h2>Case Hub</h2>
+                <div class="controls">
+                    <select id="case-topic-filter">
+                        <option value="all">All Topics</option>
+                        <option value="o2c">O2C</option>
+                        <option value="claims">Claims</option>
+                        <option value="credit">Credit</option>
+                        <option value="logistics">Logistics</option>
+                        <option value="customer">Customer</option>
+                        <option value="org">Org</option>
+                        <option value="data">Data</option>
+                        <option value="others">Others</option>
+                    </select>
+                    <select id="case-sort">
+                        <option value="date">Sort by Date</option>
+                        <option value="name">Sort by Name (A-Z)</option>
+                    </select>
+                    <button>Upload Case (ZIP)</button>
+                </div>
+            </div>
+            
+            <div class="grid-4" id="case-grid">
+                <!-- Card 1 -->
+                <div class="card" data-topic="o2c" data-name="Auto_Order_Release" data-date="2026-10-15">
+                    <div class="folder-icon">📁</div>
+                    <h3 class="card-title">Auto_Order_Release.zip</h3>
+                    <div class="card-meta">
+                        <span>By: Trixie Wong</span>
+                        <span>Oct 15, 2026</span>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">O2C</span>
+                        <span class="tag">Automation</span>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="card" data-topic="claims" data-name="Claim_Parser_Bot" data-date="2026-10-12">
+                    <div class="folder-icon">📁</div>
+                    <h3 class="card-title">Claim_Parser_Bot.zip</h3>
+                    <div class="card-meta">
+                        <span>By: Spencer</span>
+                        <span>Oct 12, 2026</span>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Claims</span>
+                        <span class="tag">Python</span>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="card" data-topic="data" data-name="Reporting_Dashboard" data-date="2026-10-10">
+                    <div class="folder-icon">📁</div>
+                    <h3 class="card-title">Reporting_Dashboard.zip</h3>
+                    <div class="card-meta">
+                        <span>By: Marilyn Mao</span>
+                        <span>Oct 10, 2026</span>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Data</span>
+                        <span class="tag">PowerBI</span>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="card" data-topic="logistics" data-name="Shipment_Tracker" data-date="2026-10-05">
+                    <div class="folder-icon">📁</div>
+                    <h3 class="card-title">Shipment_Tracker.zip</h3>
+                    <div class="card-meta">
+                        <span>By: John Doe</span>
+                        <span>Oct 05, 2026</span>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Logistics</span>
+                    </div>
+                </div>
+                 <!-- Card 5 -->
+                 <div class="card" data-topic="credit" data-name="Credit_Release_Macro" data-date="2026-10-01">
+                    <div class="folder-icon">📁</div>
+                    <h3 class="card-title">Credit_Release_Macro.zip</h3>
+                    <div class="card-meta">
+                        <span>By: Finance Team</span>
+                        <span>Oct 01, 2026</span>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">Credit</span>
+                        <span class="tag">Excel VBA</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Frontlines Section -->
+        <section id="frontlines">
+            <div class="section-header">
+                <h2>Frontlines</h2>
+                <div class="controls">
+                    <select id="blog-topic-filter">
+                        <option value="all">All Categories</option>
+                        <option value="original">Original Content</option>
+                        <option value="external">External AI News</option>
+                        <option value="supply-chain">Supply Chain Dev</option>
+                        <option value="cc-rev">Customer Care Revolution</option>
+                        <option value="tools">Tooling & Ops</option>
+                    </select>
+                    <button>Post Article</button>
+                </div>
+            </div>
+
+            <div class="list-view">
+                <!-- Blog 1 -->
+                <div class="blog-card">
+                    <div class="blog-content">
+                        <h3 class="card-title">How Generative AI is Reshaping Travel Retail Supply Chains</h3>
+                        <div class="card-meta">
+                            <span>Written by: Marilyn Mao</span>
+                            <span>2,400 Views • Oct 18, 2026</span>
+                        </div>
+                        <p style="font-size: 0.95rem; margin-bottom: 20px;">
+                            An in-depth look at how predictive models and LLMs are optimizing inventory management and reducing out-of-stock scenarios for major retailers like HTI and GDF.
+                        </p>
+                        <div class="tags">
+                            <span class="tag">Original Content</span>
+                            <span class="tag">Supply Chain Dev</span>
+                        </div>
+                    </div>
+                    <div class="blog-img">Image Placeholder</div>
+                </div>
+
+                <!-- Blog 2 -->
+                <div class="blog-card">
+                    <div class="blog-content">
+                        <h3 class="card-title">Introduction to Robotic Process Automation in O2C</h3>
+                        <div class="card-meta">
+                            <span>Written by: Operations Team</span>
+                            <span>1,700 Views • Oct 14, 2026</span>
+                        </div>
+                        <p style="font-size: 0.95rem; margin-bottom: 20px;">
+                            Step-by-step guide on how we automated the order validation process, saving over 40 hours per week across the team.
+                        </p>
+                        <div class="tags">
+                            <span class="tag">Customer Care Revolution</span>
+                            <span class="tag">Tooling & Ops</span>
+                        </div>
+                    </div>
+                    <div class="blog-img">Image Placeholder</div>
+                </div>
+                
+                 <!-- Blog 3 -->
+                 <div class="blog-card">
+                    <div class="blog-content">
+                        <h3 class="card-title">Industry Update: New AI Regulations in APAC Customs</h3>
+                        <div class="card-meta">
+                            <span>Shared by: Legal Desk</span>
+                            <span>1,200 Views • Oct 10, 2026</span>
+                        </div>
+                        <p style="font-size: 0.95rem; margin-bottom: 20px;">
+                            A summary of the recent external news regarding digital documentation and AI compliance for customs clearance in Hainan.
+                        </p>
+                        <div class="tags">
+                            <span class="tag">External AI News</span>
+                        </div>
+                    </div>
+                    <div class="blog-img">Image Placeholder</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ and Ideas Section -->
+        <section id="faq">
+            <div class="section-header">
+                <h2>FAQ and Ideas</h2>
+            </div>
+            
+            <div class="board">
+                <textarea class="board-input" rows="4" placeholder="Got an idea for a new macro? Having trouble with a script? Post it here..."></textarea>
+                <button class="btn-post">Post Message</button>
+                <div style="clear: both; padding-bottom: 20px;"></div>
+
+                <!-- Discussion Thread 1 -->
+                <div style="border-top: 1px solid var(--card-border); padding-top: 20px; margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong>@Spencer</strong>
+                        <span style="font-size: 0.8rem; color: #888;">2 hours ago</span>
+                    </div>
+                    <p>Has anyone found a good workaround for extracting tables from the new format of PDF invoices we get from ADJV?</p>
+                    
+                    <!-- Reply -->
+                    <div style="margin-left: 40px; background: rgba(0,0,0,0.1); padding: 15px; border-radius: 8px; margin-top: 10px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>@Marilyn Mao</strong>
+                            <span style="font-size: 0.8rem; color: #888;">1 hour ago</span>
+                        </div>
+                        <p>Yes! I actually uploaded a Python script in the Case Hub under "Others". Look for PDF_Scraper.zip. Let me know if you need help running it. 🚀</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 TRAP CC</p>
+        <p>Contact me: <a href="mailto:marilyn.mao@loreal.com">marilyn.mao@loreal.com</a></p>
+    </footer>
+
+    <!-- JavaScript for Interactivity -->
+    <script>
+        // --- Dark/Light Mode Toggle ---
+        const themeToggle = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                htmlElement.setAttribute('data-theme', 'light');
+                themeToggle.textContent = 'Dark Mode';
+            } else {
+                htmlElement.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = 'Light Mode';
+            }
+        });
+
+        // --- Scroll Animation for Header Title ---
+        const heroTitleContainer = document.getElementById('heroTitle');
+        const headerTitle = document.getElementById('headerTitle');
+
+        window.addEventListener('scroll', () => {
+            const scrollPos = window.scrollY;
+            
+            // Adjust threshold as needed
+            if (scrollPos > 150) {
+                // Hide big hero text
+                heroTitleContainer.style.opacity = '0';
+                heroTitleContainer.style.transform = 'translateY(-20px)';
+                
+                // Show header text (like "Spencer's Ops Guide")
+                headerTitle.classList.add('visible');
+            } else {
+                // Show big hero text
+                heroTitleContainer.style.opacity = '1';
+                heroTitleContainer.style.transform = 'translateY(0)';
+                
+                // Hide header text
+                headerTitle.classList.remove('visible');
+            }
+        });
+
+        // --- Filtering and Sorting Logic for Case Hub ---
+        const caseFilter = document.getElementById('case-topic-filter');
+        const caseSort = document.getElementById('case-sort');
+        const caseGrid = document.getElementById('case-grid');
+        const caseCards = Array.from(caseGrid.getElementsByClassName('card'));
+
+        function updateCaseGrid() {
+            const filterValue = caseFilter.value;
+            const sortValue = caseSort.value;
+
+            // Filter
+            let visibleCards = caseCards.filter(card => {
+                if (filterValue === 'all') return true;
+                return card.getAttribute('data-topic') === filterValue;
+            });
+
+            // Sort
+            visibleCards.sort((a, b) => {
+                if (sortValue === 'name') {
+                    const nameA = a.getAttribute('data-name').toLowerCase();
+                    const nameB = b.getAttribute('data-name').toLowerCase();
+                    return nameA.localeCompare(nameB);
+                } else if (sortValue === 'date') {
+                    // Descending date (newest first)
+                    const dateA = new Date(a.getAttribute('data-date'));
+                    const dateB = new Date(b.getAttribute('data-date'));
+                    return dateB - dateA;
+                }
+                return 0;
+            });
+
+            // Re-render
+            caseGrid.innerHTML = '';
+            visibleCards.forEach(card => caseGrid.appendChild(card));
+        }
+
+        caseFilter.addEventListener('change', updateCaseGrid);
+        caseSort.addEventListener('change', updateCaseGrid);
+    </script>
+</body>
+</html>
